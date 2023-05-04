@@ -1,6 +1,3 @@
-const AWS = require('aws-sdk');
-AWS.config.update({ region: 'us-east-1' });
-const dynamodb = new AWS.DynamoDB.DocumentClient();
 const { lambdaHandler } = require('../contestregistry');
 
 describe('lambdaHandler', () => {
@@ -20,30 +17,23 @@ describe('lambdaHandler', () => {
         expect(result.body).toMatch(/Invalid email address/);
     });
 
-    test('Validates email address', () => {
+    test('Validates email address', async () => {
         const randomEmail = `testuser${Math.floor(Math.random() * 100000)}@example.com`;
-        const event = {
-            body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: randomEmail })
-        };
-        const context = {};
-        const callback = (error, response) => {
-            expect(response.statusCode).toBe(200);
-            expect(JSON.parse(response.body).message).toBe('Entry submitted successfully');
-        };
-        lambdaHandler(event, context, callback);
+        const event = { body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: randomEmail }) };
+        const result = await lambdaHandler(event, {});
+
+        expect(result.statusCode).toBe(200);
+        console.log(result.statusCode);
+        expect(result.body).toMatch(/Entry submitted successfully/);
     });
 
     test('returns 400 when email already exists', async () => {
-        // Set up a test entry in the DynamoDB table with an email address
-
         // Call the lambda function with the same email address
-        const event = {
-            body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: "john.doe@example.com"
-        }) };
+        const event = { body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com' }) };
         const result = await lambdaHandler(event, {});
-        console.log(result)
 
         expect(result.statusCode).toBe(400);
+        console.log(result.body)
         expect(result.body).toMatch(/Email already exists/);
     });
 
