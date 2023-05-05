@@ -16,6 +16,11 @@ exports.lambdaHandler = async (event, context) => {
         const res = await client.query('SELECT * FROM contest_entries ORDER BY RANDOM() LIMIT 1;');
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            },
             body: JSON.stringify(res.rows)
         };
     } catch (error) {
@@ -28,4 +33,5 @@ exports.lambdaHandler = async (event, context) => {
         await client.end();
     }
 };
+
 

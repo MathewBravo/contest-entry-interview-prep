@@ -15,7 +15,7 @@ exports.lambdaHandler = async (event, context) => {
     if (!event.body) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Request body is missing' })
+            body: JSON.stringify({ message: event.body })
         };
     }
 
@@ -51,19 +51,34 @@ exports.lambdaHandler = async (event, context) => {
         if (res.rowCount === 0) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ message: 'Email already exists' })
+                body: JSON.stringify({ message: 'Email already exists' }),
+                headers: {
+                    'Access-Control-Allow-Headers': '*',
+                    'Access-Control-Allow-Methods': '*',
+                    'Access-Control-Allow-Origin': '*'
+                }
             };
         }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: 'Entry submitted successfully' })
+            body: JSON.stringify({ message: 'Entry submitted successfully' }),
+            headers: {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            }
         };
     } catch (error) {
         console.error(error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: error.toString() })
+            body: JSON.stringify({ message: error.toString() }),
+            headers: {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            }
         };
     } finally {
         await client.end();

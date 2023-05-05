@@ -16,17 +16,28 @@ exports.lambdaHandler = async (event, context) => {
         const res = await client.query('SELECT * FROM contest_entries');
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'OPTIONS,GET'
+            },
             body: JSON.stringify(res.rows)
         };
     } catch (error) {
         console.error(error);
         return {
             statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'OPTIONS,GET'
+            },
             body: JSON.stringify({ message: error })
         };
     } finally {
         await client.end();
     }
 };
+
 
 
