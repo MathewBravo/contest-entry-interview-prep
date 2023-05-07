@@ -1,16 +1,5 @@
 const { Client } = require('pg');
 
-const client = new Client({
-    user: 'mathew',
-    host: 'dpg-cha12n67avj5o4aoj7g0-a.oregon-postgres.render.com',
-    database: 'contest_registry',
-    password: '0pwHSBn7qzhAXuf4cdy5uemsboYC7sPM',
-    port: 5432,
-    ssl: {
-        rejectUnauthorized: false
-    }
-});
-
 exports.lambdaHandler = async (event, context) => {
     if (!event.body) {
         return {
