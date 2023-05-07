@@ -1,5 +1,4 @@
-const { lambdaHandler } = require('../contestregistry');
-
+const { lambdaHandler  } = require('../contestregistry');
 describe('lambdaHandler', () => {
     beforeAll(() => {
         // Set up any necessary test data or resources
@@ -9,7 +8,7 @@ describe('lambdaHandler', () => {
         // Clean up any test data or resources
     });
 
-    test('returns 400 when email is null', async () => {
+    it('returns 400 when email is null', async () => {
         const event = { body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: null }) };
         const result = await lambdaHandler(event, {});
 
@@ -17,7 +16,7 @@ describe('lambdaHandler', () => {
         expect(result.body).toMatch(/Invalid email address/);
     });
 
-    test('Validates email address', async () => {
+    it('Validates email address', async () => {
         const randomEmail = `testuser${Math.floor(Math.random() * 100000)}@example.com`;
         const event = { body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: randomEmail }) };
         const result = await lambdaHandler(event, {});
@@ -27,7 +26,7 @@ describe('lambdaHandler', () => {
         expect(result.body).toMatch(/Entry submitted successfully/);
     });
 
-    test('returns 400 when email already exists', async () => {
+    it('returns 400 when email already exists', async () => {
         // Call the lambda function with the same email address
         const event = { body: JSON.stringify({ firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com' }) };
         const result = await lambdaHandler(event, {});

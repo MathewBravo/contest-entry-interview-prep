@@ -25,7 +25,12 @@ exports.lambdaHandler = async (event, context) => {
     if (!validateEmail(email)) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Invalid email address' })
+            body: JSON.stringify({ message: 'Invalid email address' }),
+            headers: {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Access-Control-Allow-Origin': '*'
+            }
         };
     }
 

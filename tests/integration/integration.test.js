@@ -21,7 +21,7 @@ describe('Database Integration Tests', () => {
         await client.end();
     });
 
-    test('should return all entries from the contest_entries table', async () => {
+    it('should return all entries from the contest_entries table', async () => {
         const res = await client.query('SELECT * FROM contest_entries');
         expect(res.rows.length).toBeGreaterThan(0);
         expect(res.rows[0].hasOwnProperty('firstname')).toBe(true);
@@ -29,7 +29,7 @@ describe('Database Integration Tests', () => {
         expect(res.rows[0].hasOwnProperty('email')).toBe(true);
     });
 
-    test('should return a single entry from the contest_entries table', async () => {
+    it('should return a single entry from the contest_entries table', async () => {
         const res = await client.query('SELECT * FROM contest_entries ORDER BY RANDOM() LIMIT 1;');
         expect(res.rows.length).toBe(1);
         expect(res.rows[0].hasOwnProperty('firstname')).toBe(true);
@@ -37,7 +37,7 @@ describe('Database Integration Tests', () => {
         expect(res.rows[0].hasOwnProperty('email')).toBe(true);
     });
 
-    test('should not allow duplicate email addresses', async () => {
+    it('should not allow duplicate email addresses', async () => {
         const res = await client.query('SELECT * FROM contest_entries');
         const email = res.rows[0].email;
         let error;
