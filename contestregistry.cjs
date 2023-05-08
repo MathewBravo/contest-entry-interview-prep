@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 
 exports.lambdaHandler = async (event, context) => {
+    // ensure the event body is not empty
     if (!event.body) {
         return {
             statusCode: 400,
@@ -8,6 +9,14 @@ exports.lambdaHandler = async (event, context) => {
         };
     }
 
+    // Set the CORS headers
+    const headers = {
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Origin': '*'
+    }
+
+    // Parse the event body
     const { firstName, lastName, email } = JSON.parse(event.body);
 
     // Validate the email address
@@ -15,11 +24,7 @@ exports.lambdaHandler = async (event, context) => {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: 'Invalid email address' }),
-            headers: {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Origin': '*'
-            }
+            headers
         };
     }
 
@@ -42,37 +47,27 @@ exports.lambdaHandler = async (event, context) => {
             'VALUES ($1, $2, $3)\n' +
             'ON CONFLICT ON CONSTRAINT unique_email DO NOTHING;\n', [firstName, lastName, email]);
 
+        // If the email already exists, return an error
         if (res.rowCount === 0) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ message: 'Email already exists' }),
-                headers: {
-                    'Access-Control-Allow-Headers': '*',
-                    'Access-Control-Allow-Methods': '*',
-                    'Access-Control-Allow-Origin': '*'
-                }
+                headers
             };
         }
 
+        // Return a success message
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Entry submitted successfully' }),
-            headers: {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Origin': '*'
-            }
+            headers
         };
     } catch (error) {
-        console.error(error);
+        // Return an error message if something goes wrong
         return {
             statusCode: 500,
             body: JSON.stringify({ message: error.toString() }),
-            headers: {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Origin': '*'
-            }
+            headers
         };
     } finally {
         await client.end();
@@ -80,6 +75,7 @@ exports.lambdaHandler = async (event, context) => {
 };
 
 
+// Validate the email address
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);

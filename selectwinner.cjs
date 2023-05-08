@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 
 exports.lambdaHandler = async (event, context) => {
+    // Create a new client instance
     const client = new Client({
         user: 'mathew',
         host: 'dpg-cha12n67avj5o4aoj7g0-a.oregon-postgres.render.com',
@@ -11,9 +12,12 @@ exports.lambdaHandler = async (event, context) => {
             rejectUnauthorized: false
         }
     });
+    // Connect to the database
     await client.connect();
     try {
+        // Select a random winner
         const res = await client.query('SELECT * FROM contest_entries ORDER BY RANDOM() LIMIT 1;');
+        // Return the winner
         return {
             statusCode: 200,
             headers: {
@@ -24,7 +28,7 @@ exports.lambdaHandler = async (event, context) => {
             body: JSON.stringify(res.rows)
         };
     } catch (error) {
-        console.error(error);
+        // Return an error
         return {
             statusCode: 500,
             body: JSON.stringify({ message: error })
